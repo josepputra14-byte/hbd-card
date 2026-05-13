@@ -35,9 +35,16 @@ export default function Editor({ data, onChange, onExport, isExporting }: Editor
   };
 
   const generateAImessage = async () => {
+    const apiKey = process.env.GEMINI_API_KEY;
+    
+    if (!apiKey || apiKey === 'undefined') {
+      alert("API Key Gemini tidak ditemukan. Jika Anda menjalankan ini di GitHub Pages, pastikan Anda sudah menambahkan GEMINI_API_KEY di Repository Secrets.");
+      return;
+    }
+
     setIsGenerating(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey });
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: `Buatkan pesan ucapan selamat ulang tahun yang hangat dan sangat singkat dalam Bahasa Indonesia untuk ${data.recipientName} yang berusia ${data.age || ''} tahun. Pesan WAJIB hanya 1 kalimat pendek. Jangan gunakan judul atau label seperti 'Pesan:', langsung berikan ucapannya.`,
